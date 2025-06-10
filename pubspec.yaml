@@ -1,7 +1,7 @@
 name: custom_events_tracker
 description: "A simple and extensible event tracking library for Flutter/Dart apps that logs events
   and sends them to your backend API."
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/iStoriaE/custom_events_tracker
 
 environment:
