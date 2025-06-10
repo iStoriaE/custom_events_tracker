@@ -66,7 +66,7 @@ class TrackerService {
 
   /// Track an event with exactly:
   ///   • type       (String)
-  ///   • attributes (Map<String, dynamic>)
+  ///   • attributes (Map&lt;String, dynamic&gt;)
   Future<void> trackEvent({
     required String type,
     required Map<String, dynamic> attributes,

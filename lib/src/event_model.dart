@@ -17,10 +17,10 @@ class TrackedEvent {
   final String id;
   final String type;
   final Map<String, dynamic> attributes;
-  final String source;       // always "mobile"
-  final String platform;     // "android" or "ios"
+  final String source; // always "mobile"
+  final String platform; // "android" or "ios"
   final int userId;
-  final String userTime;     // local timestamp string
+  final String userTime; // local timestamp string
   final String userTimezone; // IANA timezone string
   final String env;
 
@@ -48,15 +48,15 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
 
   @override
   TrackedEvent read(BinaryReader reader) {
-    final id             = reader.readString();
-    final type           = reader.readString();
+    final id = reader.readString();
+    final type = reader.readString();
     final attributesJson = reader.readString();
-    final source         = reader.readString();
-    final platform       = reader.readString();
-    final userId         = reader.readInt();
-    final userTime       = reader.readString();
-    final userTimezone   = reader.readString();
-    final env            = reader.readString();
+    final source = reader.readString();
+    final platform = reader.readString();
+    final userId = reader.readInt();
+    final userTime = reader.readString();
+    final userTimezone = reader.readString();
+    final env = reader.readString();
 
     return TrackedEvent(
       id: id,
@@ -81,8 +81,8 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
     writer.writeString(event.source);
     writer.writeString(event.platform);
     writer.writeInt(event.userId);
-    writer.writeString(event.userTime);       // local timestamp string
-    writer.writeString(event.userTimezone);   // IANA timezone
+    writer.writeString(event.userTime); // local timestamp string
+    writer.writeString(event.userTimezone); // IANA timezone
     writer.writeString(event.env);
   }
 }
