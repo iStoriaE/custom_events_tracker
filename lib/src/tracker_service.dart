@@ -90,7 +90,7 @@ class TrackerService {
       platform: _platform,
       userId: _userId,
       userTime: userTimeStr,
-      userTimezone: 'UTC',
+      userTimezone: offset,
       env: _env,
     );
 
