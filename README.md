@@ -1,4 +1,4 @@
-# 🇵🇸 Custom Events Tracker
+# Custom Events Tracker [🇵🇸]
 
 A simple and extensible event tracking library for Flutter/Dart apps that logs events and sends them to your backend API.
 
