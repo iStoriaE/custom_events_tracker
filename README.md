@@ -1,6 +1,11 @@
-# Custom Events Tracker
+# 🇵🇸 Custom Events Tracker
 
 A simple and extensible event tracking library for Flutter/Dart apps that logs events and sends them to your backend API.
+
+Easily log user interactions and system events, then send them to your backend API for analytics, monitoring, or auditing.  
+Perfect for integrating with tools like **Metabase** for powerful data visualization and insight.
+
+![Metabase](https://www.metabase.com/docs/latest/images/metabase-product-screenshot.png)
 
 ## Features
 
