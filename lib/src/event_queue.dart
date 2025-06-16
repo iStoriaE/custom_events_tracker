@@ -17,7 +17,14 @@ class EventQueue {
       Hive.registerAdapter(TrackedEventAdapter());
     }
 
-    // 3) Open (or create) the box for TrackedEvent
+    // 3) Delete the old box if it exists (to handle schema changes)
+    try {
+      await Hive.deleteBoxFromDisk(_boxName);
+    } catch (e) {
+      // Ignore errors if box doesn't exist
+    }
+
+    // 4) Open (or create) the box for TrackedEvent
     _box = await Hive.openBox<TrackedEvent>(_boxName);
   }
 

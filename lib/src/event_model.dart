@@ -5,12 +5,12 @@ import 'package:hive_ce/hive.dart';
 /// TrackedEvent now includes:
 ///  • id             (String)
 ///  • type           (String)
-///  • attributes     (Map<String, dynamic>)    – stored as JSON string in adapter
+///  • attributes     (Map&lt;String, dynamic&gt;)    – stored as JSON string in adapter
 ///  • source         (String)   // always "mobile"
 ///  • platform       (String)   // "android" or "ios"
 ///  • userId         (int)
-///  • user_time      (String)   // local time in yyyy-MM-dd'T'HH:mm:ssXXX
-///  • userTimezone   (String)   // IANA timezone name, e.g. "Asia/Gaza"
+///  • user_time      (String)   // local time in yyyy-MM-dd'T'HH:mm:ss
+///  • timezoneOffset   (int)   // Timezone offset in hours, e.g. 2, 0, -5
 ///  • env            (String)
 /// ------------------------------------------------------------------------
 class TrackedEvent {
@@ -21,7 +21,7 @@ class TrackedEvent {
   final String platform; // "android" or "ios"
   final int userId;
   final String userTime; // local timestamp string
-  final String userTimezone; // IANA timezone string
+  final int timezoneOffset; // Timezone offset in hours
   final String env;
 
   TrackedEvent({
@@ -32,14 +32,14 @@ class TrackedEvent {
     required this.platform,
     required this.userId,
     required this.userTime,
-    required this.userTimezone,
+    required this.timezoneOffset,
     required this.env,
   });
 }
 
 /// ------------------------------------------------------------------------
 /// Hive CE TypeAdapter for TrackedEvent:
-///  • Reads/writes userTime & userTimezone & source & platform
+///  • Reads/writes userTime & timezoneOffset & source & platform
 ///  • Order of read/write must match exactly.
 /// ------------------------------------------------------------------------
 class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
@@ -55,7 +55,7 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
     final platform = reader.readString();
     final userId = reader.readInt();
     final userTime = reader.readString();
-    final userTimezone = reader.readString();
+    final timezoneOffset = reader.readInt(); // Changed from readString to readInt
     final env = reader.readString();
 
     return TrackedEvent(
@@ -68,7 +68,7 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
       platform: platform,
       userId: userId,
       userTime: userTime,
-      userTimezone: userTimezone,
+      timezoneOffset: timezoneOffset,
       env: env,
     );
   }
@@ -82,7 +82,7 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
     writer.writeString(event.platform);
     writer.writeInt(event.userId);
     writer.writeString(event.userTime); // local timestamp string
-    writer.writeString(event.userTimezone); // IANA timezone
+    writer.writeInt(event.timezoneOffset); // Changed from writeString to writeInt
     writer.writeString(event.env);
   }
 }

@@ -71,42 +71,64 @@ class TrackerService {
     required String type,
     required Map<String, dynamic> attributes,
   }) async {
-    // 1) Obtain local DateTime and format as ISO 8601 with timezone offset
-    final DateTime nowLocal = DateTime.now();
-    final DateFormat formatter = DateFormat("yyyy-MM-dd'T'HH:mm:ss");
-    final String offset = nowLocal.timeZoneOffset.isNegative
-        ? '-${nowLocal.timeZoneOffset.abs().inHours.toString().padLeft(2, '0')}:${(nowLocal.timeZoneOffset.abs().inMinutes % 60).toString().padLeft(2, '0')}'
-        : '+${nowLocal.timeZoneOffset.inHours.toString().padLeft(2, '0')}:${(nowLocal.timeZoneOffset.inMinutes % 60).toString().padLeft(2, '0')}';
-    final String userTimeStr = '${formatter.format(nowLocal)}$offset';
+    // Check if initialized first
+    if (!_initialized) {
+      if (kDebugMode) {
+        print('TrackerService not initialized. Call initialize() first.');
+      }
+      return; // Exit early instead of crashing
+    }
 
-    // 3) source constant is always "mobile"
-    const String sourceConst = 'mobile';
+    try {
+      // 1) Format datetime with timezone offset in ISO 8601 format
+      // Get the current date and time in the local timezone
+      // Example: If local time is 2023-07-15 10:30:00-04:00 (EDT),
+      // then 'now' will be 2023-07-15 10:30:00.000 with timezone info preserved
+      DateTime now = DateTime.now();
+      // Format time as ISO 8601 string, example: "2023-10-15T14:30:45.123+02:00"
+      // This captures date, time with milliseconds, and timezone offset
+      // Format to ISO 8601 including timezone offset
+      String userTime = DateFormat('yyyy-MM-ddTHH:mm:ss').format(now) + 
+          (now.timeZoneOffset.isNegative
+              ? '-${now.timeZoneOffset.inHours.abs().toString().padLeft(2, '0')}:${(now.timeZoneOffset.inMinutes.abs() % 60).toString().padLeft(2, '0')}'
+              : '+${now.timeZoneOffset.inHours.toString().padLeft(2, '0')}:${(now.timeZoneOffset.inMinutes % 60).toString().padLeft(2, '0')}');
+      
+      // 2) Get timezone offset in hours
+      final int timezoneOffset = now.timeZoneOffset.inHours;
 
-    final event = TrackedEvent(
-      id: _uuid.v4(),
-      type: type,
-      attributes: attributes,
-      source: sourceConst,
-      platform: _platform,
-      userId: _userId,
-      userTime: userTimeStr,
-      userTimezone: offset,
-      env: _env,
-    );
+      // 3) source constant is always "mobile"
+      const String sourceConst = 'mobile';
 
-    // 4) Check connectivity:
-    final connResult = await Connectivity().checkConnectivity();
-    final isOnline =
-        (connResult == ConnectivityResult.wifi ||
-        connResult == ConnectivityResult.mobile);
+      final event = TrackedEvent(
+        id: _uuid.v4(),
+        type: type,
+        attributes: attributes,
+        source: sourceConst,
+        platform: _platform,
+        userId: _userId,
+        userTime: userTime,
+        timezoneOffset: timezoneOffset,
+        env: _env,
+      );
 
-    if (isOnline) {
-      final success = await _sendEventToServer(event: event);
-      if (!success) {
+      // 4) Check connectivity:
+      final connResult = await Connectivity().checkConnectivity();
+      final isOnline =
+          (connResult == ConnectivityResult.wifi ||
+          connResult == ConnectivityResult.mobile);
+
+      if (isOnline) {
+        final success = await _sendEventToServer(event: event);
+        if (!success) {
+          await EventQueue.enqueue(event);
+        }
+      } else {
         await EventQueue.enqueue(event);
       }
-    } else {
-      await EventQueue.enqueue(event);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error in trackEvent: $e');
+      }
     }
   }
 
@@ -115,7 +137,7 @@ class TrackerService {
   ///   • attributes (JSON string)
   ///   • user_id
   ///   • user_time
-  ///   • user_timezone
+  ///   • timezone_offset
   ///   • source
   ///   • platform
   ///   • env
@@ -126,8 +148,8 @@ class TrackerService {
         // attributes must be a JSON-encoded string in the form-body
         'attributes': jsonEncode(event.attributes),
         'user_id': event.userId.toString(),
-        'user_time': event.userTime, // e.g. "2025-06-04T14:20:30+02:00"
-        'user_timezone': event.userTimezone, // e.g. "Asia/Gaza"
+        'user_time': event.userTime, // e.g. "2025-06-04T14:20:30"
+        'timezone_offset': event.timezoneOffset.toString(), // e.g. "2" or "-5"
         'source': event.source, // always "mobile"
         'platform': event.platform, // "android" or "ios"
         'env': event.env,
@@ -146,9 +168,10 @@ class TrackerService {
           .timeout(const Duration(seconds: 10));
 
       if (kDebugMode) {
-        print("ISTORIAEVENTTRACKER${event.userTimezone}");
-        print("ISTORIAEVENTTRACKER${response.statusCode}");
-        print("ISTORIAEVENTTRACKER${response.body}");
+        print("flutter_custom_tracker: formData: ${formData.toString()}");
+        print("flutter_custom_tracker: event.timezoneOffset: ${event.timezoneOffset}");
+        print("flutter_custom_tracker: response.statusCode: ${response.statusCode}");
+        print("flutter_custom_tracker: response.body: ${response.body}");
       }
 
       return response.statusCode >= 200 && response.statusCode < 300;
