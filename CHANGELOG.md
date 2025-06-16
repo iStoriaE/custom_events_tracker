@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.1] - 2025-06-16
+### Enhancement:
+- Changed event ID generation to use UUIDv7 (time-ordered) instead of UUIDv4
+- Better database performance with time-ordered UUIDv7
+- Improved documentation with example values
+
 ## [0.1.0] - 2025-06-16
 ### Breaking changes:
 - timezoneOffset is now an integer representing hours offset instead of a formatted string

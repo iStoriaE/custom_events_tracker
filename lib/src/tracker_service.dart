@@ -16,7 +16,7 @@ class TrackerService {
   static final TrackerService _instance = TrackerService._privateConstructor();
   factory TrackerService() => _instance;
 
-  final _uuid = Uuid();
+  final _uuid = Uuid(); // Used for v7 time-based UUIDs
   bool _initialized = false;
   late String _endpoint;
   late String _apiKey;
@@ -27,7 +27,7 @@ class TrackerService {
   /// Initialize once (e.g. in main()):
   ///  • endpointUrl : your backend URL
   ///  • env         : "production", "staging", etc.
-  ///  • userId      : current user’s ID (int)
+  ///  • userId      : current user's ID (int)
   Future<void> initialize({
     required String endpointUrl,
     required String apiKey,
@@ -100,7 +100,7 @@ class TrackerService {
       const String sourceConst = 'mobile';
 
       final event = TrackedEvent(
-        id: _uuid.v4(),
+        id: _uuid.v7(), // Time-based UUID for better database performance
         type: type,
         attributes: attributes,
         source: sourceConst,
