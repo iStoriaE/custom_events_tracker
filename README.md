@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/iStoriaE/custom_events_tracker/refs/heads/master/custom_events_tracker_logo.png?sanitize=true" width="350px">
+  <img src="https://raw.githubusercontent.com/iStoriaE/custom_events_tracker/refs/heads/master/custom_events_tracker_logo.png?sanitize=true">
 </p>
 <h2 align="center">Track Events, Visualize Success</h2>
 
