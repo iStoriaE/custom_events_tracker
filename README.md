@@ -1,3 +1,8 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/iStoriaE/custom_events_tracker/refs/heads/master/custom_events_tracker_logo.png?sanitize=true" width="350px">
+</p>
+<h2 align="center">Track Events, Visualize Success</h2>
+
 # Custom Events Tracker
 
 A simple and extensible event tracking library for Flutter/Dart apps that logs events and sends them to your backend API.
