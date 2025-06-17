@@ -2,9 +2,10 @@
 
 A simple and extensible event tracking library for Flutter/Dart apps that logs events and sends them to your backend API.
 
-Version: 0.1.1
+Version: 0.2.0
 
 Easily log user interactions and system events, then send them to your backend API for analytics, monitoring, or auditing.  
+
 Perfect for integrating with tools like **Metabase** for powerful data visualization and insight.
 
 ![Metabase](https://www.metabase.com/docs/latest/images/metabase-product-screenshot.png)
@@ -25,7 +26,7 @@ Add this package to your Flutter project by adding the following to your `pubspe
 
 ```yaml
 dependencies:
-  custom_events_tracker: ^0.1.1
+  custom_events_tracker: ^0.2.0
 ```
 
 Then run:
@@ -51,11 +52,23 @@ Future<void> main() async {
     endpointUrl: 'https://your-api-endpoint.com/events',
     apiKey: 'your-api-key',
     env: 'development', // or 'production', 'staging', etc.
-    userId: 123, // user's ID in your system
+    userId: 123, // Optional: can be null or set later
   );
   
   runApp(MyApp());
 }
+```
+
+### User Management
+
+You can set or update the user ID at any time after initialization:
+
+```dart
+// Set user ID after login
+TrackerService().setUserId(123);
+
+// Remove user ID after logout
+TrackerService().setUserId(null);
 ```
 
 ### Tracking Events
@@ -100,7 +113,7 @@ Events are automatically structured with the following fields:
 | `attributes` | Map&lt;String, dynamic&gt; | Custom attributes | `{"price": 19.99}` |
 | `source` | String | Always "mobile" | "mobile" |
 | `platform` | String | "android" or "ios" | "android" |
-| `userId` | int | User ID | 123 |
+| `userId` | int? | Optional user ID | 123 or null |
 | `userTime` | String | ISO 8601 timestamp | "2025-06-16T12:23:07+02:00" |
 | `timezone_offset` | int | Hours from UTC | 2 or -5 |
 | `env` | String | Environment | "production" |

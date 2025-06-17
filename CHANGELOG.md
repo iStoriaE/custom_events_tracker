@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0] - 2025-06-17
+### Feature:
+- Made userId optional (nullable)
+- Added setUserId method to update user ID after initialization
+- Updated Hive adapter to handle nullable userId
+- Changed API to omit user_id field when null
+
 ## [0.1.1] - 2025-06-16
 ### Enhancement:
 - Changed event ID generation to use UUIDv7 (time-ordered) instead of UUIDv4

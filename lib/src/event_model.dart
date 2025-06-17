@@ -8,7 +8,7 @@ import 'package:hive_ce/hive.dart';
 ///  • attributes     (Map&lt;String, dynamic&gt;)    – stored as JSON string in adapter
 ///  • source         (String)   // always "mobile"
 ///  • platform       (String)   // "android" or "ios"
-///  • userId         (int)
+///  • userId         (int?)     // optional user ID
 ///  • user_time      (String)   // local time in yyyy-MM-dd'T'HH:mm:ss
 ///  • timezoneOffset   (int)   // Timezone offset in hours, e.g. 2, 0, -5
 ///  • env            (String)
@@ -19,7 +19,7 @@ class TrackedEvent {
   final Map<String, dynamic> attributes;
   final String source; // always "mobile"
   final String platform; // "android" or "ios"
-  final int userId;
+  final int? userId; // Changed to nullable
   final String userTime; // local timestamp string
   final int timezoneOffset; // Timezone offset in hours
   final String env;
@@ -30,7 +30,7 @@ class TrackedEvent {
     required this.attributes,
     required this.source,
     required this.platform,
-    required this.userId,
+    this.userId, // Made optional
     required this.userTime,
     required this.timezoneOffset,
     required this.env,
@@ -53,9 +53,10 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
     final attributesJson = reader.readString();
     final source = reader.readString();
     final platform = reader.readString();
-    final userId = reader.readInt();
+    final hasUserId = reader.readBool();
+    final userId = hasUserId ? reader.readInt() : null;
     final userTime = reader.readString();
-    final timezoneOffset = reader.readInt(); // Changed from readString to readInt
+    final timezoneOffset = reader.readInt();
     final env = reader.readString();
 
     return TrackedEvent(
@@ -80,9 +81,12 @@ class TrackedEventAdapter extends TypeAdapter<TrackedEvent> {
     writer.writeString(jsonEncode(event.attributes)); // JSON string
     writer.writeString(event.source);
     writer.writeString(event.platform);
-    writer.writeInt(event.userId);
+    writer.writeBool(event.userId != null);
+    if (event.userId != null) {
+      writer.writeInt(event.userId!);
+    }
     writer.writeString(event.userTime); // local timestamp string
-    writer.writeInt(event.timezoneOffset); // Changed from writeString to writeInt
+    writer.writeInt(event.timezoneOffset);
     writer.writeString(event.env);
   }
 }

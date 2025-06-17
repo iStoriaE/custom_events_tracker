@@ -21,18 +21,18 @@ class TrackerService {
   late String _endpoint;
   late String _apiKey;
   late String _env;
-  late int _userId;
+  int? _userId; // Changed to nullable
   late String _platform; // "android" or "ios"
 
   /// Initialize once (e.g. in main()):
   ///  • endpointUrl : your backend URL
   ///  • env         : "production", "staging", etc.
-  ///  • userId      : current user's ID (int)
+  ///  • userId      : current user's ID (int), optional
   Future<void> initialize({
     required String endpointUrl,
     required String apiKey,
     required String env,
-    required int userId,
+    int? userId, // Made optional
   }) async {
     if (_initialized) return;
 
@@ -147,11 +147,11 @@ class TrackerService {
         'type': event.type,
         // attributes must be a JSON-encoded string in the form-body
         'attributes': jsonEncode(event.attributes),
-        'user_id': event.userId.toString(),
-        'user_time': event.userTime, // e.g. "2025-06-04T14:20:30"
-        'timezone_offset': event.timezoneOffset.toString(), // e.g. "2" or "-5"
-        'source': event.source, // always "mobile"
-        'platform': event.platform, // "android" or "ios"
+        if (event.userId != null) 'user_id': event.userId.toString(),
+        'user_time': event.userTime,
+        'timezone_offset': event.timezoneOffset.toString(),
+        'source': event.source,
+        'platform': event.platform,
         'env': event.env,
       };
 
@@ -195,5 +195,10 @@ class TrackerService {
   /// Public: manually flush pending events immediately.
   Future<void> flushPendingEvents() async {
     await _flushPendingEventsToServer();
+  }
+
+  /// Set or update the user ID after initialization
+  void setUserId(int? userId) {
+    _userId = userId;
   }
 }
