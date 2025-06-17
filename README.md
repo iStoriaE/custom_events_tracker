@@ -7,7 +7,7 @@
 
 A simple and extensible event tracking library for Flutter/Dart apps that logs events and sends them to your backend API.
 
-Version: 0.2.0
+Version: 0.2.1
 
 Easily log user interactions and system events, then send them to your backend API for analytics, monitoring, or auditing.  
 
@@ -31,7 +31,7 @@ Add this package to your Flutter project by adding the following to your `pubspe
 
 ```yaml
 dependencies:
-  custom_events_tracker: ^0.2.0
+  custom_events_tracker: ^0.2.1
 ```
 
 Then run:

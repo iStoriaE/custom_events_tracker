@@ -1,6 +1,9 @@
 # Changelog
 
 ## [0.2.0] - 2025-06-17
+- Enahnce readme file.
+
+## [0.2.0] - 2025-06-17
 ### Feature:
 - Made userId optional (nullable)
 - Added setUserId method to update user ID after initialization
